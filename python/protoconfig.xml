@@ -1,9 +1,8 @@
 <proto>
     <macrogroup>
-        <entry name="PROTO_ADD_USER"/>
-        <entry name="PROTO_MODIFY_USER"/>
+        <entry name="PROTO_ADD_USER" value="1"/>
+        <entry name="PROTO_MODIFY_USER" value="2"/>
     </macrogroup>
-
 
     <interface id="PROTO_ADD_USER">
         <entry name="username" type="string" desc="username"/>
@@ -14,6 +13,6 @@
     <interface id="PROTO_MODIFY_USER">
         <entry name="username" type="string" desc="username"/>
         <entry name="password" type="string" desc="password"/>
-        <entry name="id" type="int64" desc="int64"/>
+        <entry name="id" type="string" desc="int64"/>
     </interface>
 </proto>
