@@ -4,6 +4,7 @@
 #include<pthread.h>
 #include<sys/epoll.h>
 #include<vector>
+#include<Packet.h>
 //
 // Created by alan on 9/17/17.
 //
@@ -29,12 +30,7 @@ class TCPServer{
         ;
 
 public :
-        struct packet_t{
-            packet_t(size_t readsize,const char * mess);
-            packet_t() = default;
-            int len;
-            char content[MAXLINE];
-        };
+        
         /** TCPServer class constructor **/
         TCPServer(int port);
         ~TCPServer();
