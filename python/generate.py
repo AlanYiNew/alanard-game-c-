@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
  
 import xml.sax
-
+import sys
 
 class ProtoHandler( xml.sax.ContentHandler ):
     
@@ -35,7 +35,10 @@ class ProtoHandler( xml.sax.ContentHandler ):
                pvalue = attributes["value"]
       except Exception as err:
           print("\033[0;31m%s\033[0m" % ("Error line: " + str(self.parser.getLineNumber()) +", Require key or key is invalid, " + str(err)))
-
+          try:
+             sys.exit(-1)
+          finally:
+             print("Error Exit with error code -1")
 
    def endElement(self, tag):
        self.stack.pop();
