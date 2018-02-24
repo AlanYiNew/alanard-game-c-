@@ -1,0 +1,5 @@
+<proto>
+    <entry name="username" type="string" desc="username"/>
+    <entry name="password" type="string" desc="password"/>
+    <entry name="id" type="int64" desc="int64"/>
+</proto>
