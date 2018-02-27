@@ -1,18 +1,31 @@
 <proto>
     <macrogroup>
-        <entry name="PROTO_ADD_USER" value="1"/>
-        <entry name="PROTO_MODIFY_USER" value="2"/>
+        <entry name="PROTO_ADD_USER" value="1" required = "1"/>
+        <entry name="PROTO_MODIFY_USER" value="2" required = "1"/>
+        
+        <enum name="PlatformId">
+            <entry name="AREA1" value="1" desc="area1" required = "1"/>
+            <entry name="AREA2" value="2" desc="area2" required = "1"/>
+        </enum>
+ 
     </macrogroup>
 
     <interface id="PROTO_ADD_USER">
-        <entry name="username" type="string" desc="username"/>
-        <entry name="password" type="string" desc="password"/>
-        <entry name="id" type="int64" desc="int64"/>
+        <entry name="username" type="string" desc="username" required = "1"/>
+        <entry name="password" type="string" desc="password" required = "1"/>
+        <entry name="id"       type="int64"  desc="id"       required = "1"/>
+        <entry name="platformid" type="int64" desc="platformid" required = "1"/>
+	
+        <enum name="PlatformId">
+            <entry name="AREA1" value="1" desc="area1" required = "1"/>
+            <entry name="AREA2" value="2" desc="area2" required = "1"/>
+        </enum>
     </interface>   
         
     <interface id="PROTO_MODIFY_USER">
-        <entry name="username" type="string" desc="username"/>
-        <entry name="password" type="string" desc="password"/>
-        <entry name="id" type="string" desc="int64"/>
+        <entry name="username" type="string" desc="username" required = "1"/>
+        <entry name="password" type="string" desc="password" required = "1"/>
+        <entry name="id" type="string" desc="id" required = "1"/>
     </interface>
+
 </proto>
