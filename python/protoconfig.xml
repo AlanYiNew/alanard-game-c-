@@ -10,6 +10,7 @@
  
     </macrogroup>
 
+    <!-- id_interface -->
     <interface id="PROTO_ADD_USER">
         <entry name="username" type="string" desc="username" required = "1"/>
         <entry name="password" type="string" desc="password" required = "1"/>
@@ -28,4 +29,10 @@
         <entry name="id" type="string" desc="id" required = "1"/>
     </interface>
 
+    <!-- name_interface -->
+    <interface name="PlayerPos">
+        <entry name="posX" type="double" desc="posX" required = "1"/>
+        <entry name="posY" type="double" desc="posY" required = "2"/>
+        <entry name="posZ" type="double" desc="posZ" required = "3"/>
+    </interface>
 </proto>

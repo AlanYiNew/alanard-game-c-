@@ -3,7 +3,7 @@
 
 import xml.sax
 import sys
-import json
+import yaml
 
 def print_err(st):
     print("\033[0;31m%s\033[0m" % st)
@@ -22,9 +22,11 @@ class ProtoHandler( xml.sax.ContentHandler ):
         self.enum = ""
         self.cur_interface = ""
         self.parser = parser
-        self.interfaces = {}
-        self.inner = {}
-        self.macro = {}
+        self.interface_type = ""
+        self.proto = {}
+        self.proto["macro"] = {}
+        self.proto["id_interface"] = {}
+        self.proto["name_interface"] = {}
 
 #==========HANDLER events===========#
     def startElement(self, tag, attributes):
@@ -37,43 +39,45 @@ class ProtoHandler( xml.sax.ContentHandler ):
 
         try:
             if tag == "entry":
-                if (self.stack[-2] == "interface"):
+                if (self.stack[-2] == "interface" and self.stack[-3] == "proto"):
                     pname = attributes["name"]
                     ptype = attributes["type"]
                     pdesc = attributes["desc"]
                     prequired = attributes["required"]
-                    self.interfaces[self.cur_interface][pname] = {};
-                    self.interfaces[self.cur_interface][pname]["type"] = ptype; 
-                    self.interfaces[self.cur_interface][pname]["desc"] = pdesc;
-                    self.interfaces[self.cur_interface][pname]["required"] = prequired
-                elif (self.stack[-2] == "macrogroup"):
+                    self.proto[self.interface_type][self.cur_interface][pname] = {};
+                    self.proto[self.interface_type][self.cur_interface][pname]["type"] = ptype; 
+                    self.proto[self.interface_type][self.cur_interface][pname]["desc"] = pdesc;
+                    self.proto[self.interface_type][self.cur_interface][pname]["required"] = prequired
+                elif (self.stack[-2] == "macrogroup" and self.stack[-3] == "proto"):
                     pname = attributes["name"]
                     pvalue = attributes["value"]
-                    self.macro[pname] = pvalue
+                    self.proto["macro"][pname] = pvalue
                 elif (self.stack[-2] == "enum" and self.stack[-3] == "interface"):
-                    self.interfaces[self.cur_interface]["enum"][self.enum][attributes["name"]] = attributes["value"]
+                    self.proto[self.interface_type][self.cur_interface]["enum"][self.enum][attributes["name"]] = attributes["value"]
             
-            elif (tag == "interface"):
+            elif (tag == "interface" and self.stack[-2] == "proto"):
                 if (attributes.__contains__("id")):
-                    self.cur_interface = attributes["id"]
-                    self.interfaces[attributes["id"]] = {}
-                
-                    if (attributes["id"] not in self.macro):
+                    self.cur_interface = attributes["id"] 
+                    self.interface_type = "id_interface"            
+                    self.proto[self.interface_type][attributes["id"]] = {}
+    
+                    if (attributes["id"] not in self.proto["macro"]):
                         print_err("Invalid Id in interface, Error line: " + str(self.parser.getLineNumber()))
                         self.exit(-1)
                 
                 elif (attributes.__contains__("name")):
                     self.cur_interface = attributes["name"]
-                    self.inner[attributes["name"]] = {}
+                    self.interface_type = "name_interface"
+                    self.proto[self.interface_type][attributes["name"]] = {}
                 
                 else:
-                    print_err("Invalid interface. Line: " + str(self.parser.getLineNumber()));
-                       
+                    print_err("Invalid interface. Line: " + str(self.parser.getLineNumber()))
+                    self.exit(-1)                       
 
             elif (tag == "enum" and self.stack[-2] == "interface"):
-                if ("enum" not in self.interfaces[self.cur_interface]):
-                    self.interfaces[self.cur_interface]["enum"] = {}
-                self.interfaces[self.cur_interface]["enum"][attributes["name"]] = {}
+                if ("enum" not in self.proto[self.interface_type][self.cur_interface]):
+                    self.proto[self.interface_type][self.cur_interface]["enum"] = {}
+                self.proto[self.interface_type][self.cur_interface]["enum"][attributes["name"]] = {}
                 self.enum = attributes["name"]
         
         except Exception as err:
@@ -95,8 +99,7 @@ class ProtoHandler( xml.sax.ContentHandler ):
 
 #========DEBUGING Helpers===========#
     def pprint(self):
-        print (json.dumps(self.macro))
-        print (json.dumps(self.interfaces,indent=4))
+        print (yaml.dump(self.proto,indent=4,default_flow_style=False))
 
 if ( __name__ == "__main__"):
 

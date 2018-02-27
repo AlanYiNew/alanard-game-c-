@@ -1,4 +1,6 @@
 #Rules#
+Python dependcy (Python3)
+    Pyyaml
 
 Root tag must be <proto>, followed by a <macrogroup> specifying all the interfaces id and  all the <interfaces> tag, with the id value pointing to macro.
 
