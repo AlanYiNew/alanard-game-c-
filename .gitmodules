@@ -1,3 +1,6 @@
 [submodule "protobuf"]
 	path = protobuf
 	url = https://github.com/google/protobuf.git
+[submodule "third_party_lib/boost/property_tree"]
+	path = third_party_lib/boost/property_tree
+	url = https://github.com/boostorg/property_tree.git
