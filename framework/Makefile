@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alan/alanard-game-c-/framework
+CMAKE_SOURCE_DIR = /home/alan/alanard-game-c-new/framework
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alan/alanard-game-c-/framework
+CMAKE_BINARY_DIR = /home/alan/alanard-game-c-new/framework
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-/framework/CMakeFiles /home/alan/alanard-game-c-/framework/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-new/framework/CMakeFiles /home/alan/alanard-game-c-new/framework/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-/framework/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-new/framework/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -123,32 +123,86 @@ me/fast:
 	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/build
 .PHONY : me/fast
 
-AObject.o: AObject.cpp.o
+ALApp.o: ALApp.cpp.o
 
-.PHONY : AObject.o
+.PHONY : ALApp.o
 
 # target to build an object file
-AObject.cpp.o:
-	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/AObject.cpp.o
-.PHONY : AObject.cpp.o
+ALApp.cpp.o:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/ALApp.cpp.o
+.PHONY : ALApp.cpp.o
 
-AObject.i: AObject.cpp.i
+ALApp.i: ALApp.cpp.i
 
-.PHONY : AObject.i
+.PHONY : ALApp.i
 
 # target to preprocess a source file
-AObject.cpp.i:
-	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/AObject.cpp.i
-.PHONY : AObject.cpp.i
+ALApp.cpp.i:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/ALApp.cpp.i
+.PHONY : ALApp.cpp.i
 
-AObject.s: AObject.cpp.s
+ALApp.s: ALApp.cpp.s
 
-.PHONY : AObject.s
+.PHONY : ALApp.s
 
 # target to generate assembly for a file
-AObject.cpp.s:
-	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/AObject.cpp.s
-.PHONY : AObject.cpp.s
+ALApp.cpp.s:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/ALApp.cpp.s
+.PHONY : ALApp.cpp.s
+
+ALConfig.o: ALConfig.cpp.o
+
+.PHONY : ALConfig.o
+
+# target to build an object file
+ALConfig.cpp.o:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/ALConfig.cpp.o
+.PHONY : ALConfig.cpp.o
+
+ALConfig.i: ALConfig.cpp.i
+
+.PHONY : ALConfig.i
+
+# target to preprocess a source file
+ALConfig.cpp.i:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/ALConfig.cpp.i
+.PHONY : ALConfig.cpp.i
+
+ALConfig.s: ALConfig.cpp.s
+
+.PHONY : ALConfig.s
+
+# target to generate assembly for a file
+ALConfig.cpp.s:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/ALConfig.cpp.s
+.PHONY : ALConfig.cpp.s
+
+network/ALTCPServer.o: network/ALTCPServer.cpp.o
+
+.PHONY : network/ALTCPServer.o
+
+# target to build an object file
+network/ALTCPServer.cpp.o:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/network/ALTCPServer.cpp.o
+.PHONY : network/ALTCPServer.cpp.o
+
+network/ALTCPServer.i: network/ALTCPServer.cpp.i
+
+.PHONY : network/ALTCPServer.i
+
+# target to preprocess a source file
+network/ALTCPServer.cpp.i:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/network/ALTCPServer.cpp.i
+.PHONY : network/ALTCPServer.cpp.i
+
+network/ALTCPServer.s: network/ALTCPServer.cpp.s
+
+.PHONY : network/ALTCPServer.s
+
+# target to generate assembly for a file
+network/ALTCPServer.cpp.s:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/network/ALTCPServer.cpp.s
+.PHONY : network/ALTCPServer.cpp.s
 
 # Help Target
 help:
@@ -159,9 +213,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... me"
-	@echo "... AObject.o"
-	@echo "... AObject.i"
-	@echo "... AObject.s"
+	@echo "... ALApp.o"
+	@echo "... ALApp.i"
+	@echo "... ALApp.s"
+	@echo "... ALConfig.o"
+	@echo "... ALConfig.i"
+	@echo "... ALConfig.s"
+	@echo "... network/ALTCPServer.o"
+	@echo "... network/ALTCPServer.i"
+	@echo "... network/ALTCPServer.s"
 .PHONY : help
 
 

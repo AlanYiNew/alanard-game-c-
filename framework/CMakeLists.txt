@@ -5,12 +5,17 @@ cmake_minimum_required(VERSION 3.5)
 MESSAGE("${CMAKE_SOURCE_DIR}/include")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include")
 
+#Use CXX 11
+set(CMAKE_CXX_STANDARD 11)
+
 #source directory  
 AUX_SOURCE_DIRECTORY(./ DIR_SRCS)  
+set (OTHER_SRCS network/ALTCPServer.cpp)
+
+#AUX_SOURCE_DIRECTORY(./network NETWORK_SRCS)
 
 
-
-ADD_EXECUTABLE(me ${DIR_SRCS})
+ADD_EXECUTABLE(me ${DIR_SRCS} ${OTHER_SRCS})
 #set environment variable  
 #SET(TEST_MATH  
 #${DIR_SRCS}  

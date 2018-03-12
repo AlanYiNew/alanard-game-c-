@@ -1,3 +1,6 @@
 [submodule "framework/third_party_lib/rapidjson"]
 	path = framework/third_party_lib/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
+[submodule "framework/third_party_lib/nlohmann-json"]
+	path = framework/third_party_lib/nlohmann-json
+	url = https://github.com/nlohmann/json.git

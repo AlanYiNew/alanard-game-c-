@@ -10,7 +10,7 @@
 #ifndef __UDPSERVER_H_
 #define __UDPSERVER_H_
 
-class UDPServer{
+class ALUDPServer{
 
 public :
     using message_t = struct{
@@ -21,8 +21,8 @@ public :
     using udp_cb_t = int (*)(void* userptr,const message_t&,message_t&);
 
     /** UDPServer class constructor **/
-    UDPServer(int port,size_t buffer_size);
-    ~UDPServer();
+    ALUDPServer(int port,size_t buffer_size);
+    ~ALUDPServer();
 
     /** Register a udp callback function **/
     int register_cb(udp_cb_t func, void * arg);

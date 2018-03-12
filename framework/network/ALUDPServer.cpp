@@ -5,7 +5,7 @@
 //
 // Created by alan on 9/17/17.
 //
-int UDPServer::init(){
+int ALUDPServer::init(){
     /** set protocol family ipv4 **/
     _serv_addr.sin_family = AF_INET;
 
@@ -19,20 +19,20 @@ int UDPServer::init(){
     _callback_func = nullptr;
 }
 
-int UDPServer::register_cb(udp_cb_t func,void* arg) {
+int ALUDPServer::register_cb(udp_cb_t func,void* arg) {
     std::cout << "registering function" << std::endl;
     _callback_func = func;
     _callback_arg = arg;
 }
 
-UDPServer::UDPServer(int p,size_t buffer_size):_port(p){
+ALUDPServer::ALUDPServer(int p,size_t buffer_size):_port(p){
     _buffer = std::make_unique<char[]>(buffer_size);
     _buffer_size = buffer_size;
 };
 
 
 
-int UDPServer::starts() {
+int ALUDPServer::starts() {
     sockaddr_in cliaddr;
     socklen_t cliaddrlen = sizeof(sockaddr);
 
@@ -71,5 +71,5 @@ int UDPServer::starts() {
 
 }
 
-UDPServer::~UDPServer(){
+ALUDPServer::~ALUDPServer(){
 }
