@@ -2,7 +2,7 @@
 ALApp::ALApp(const char * fileName) : 
     ALTCPServer(), 
     ALConfig(fileName), 
-    _buff(std::make_unique<unsigned char[]>(getConfigParam<unsigned int>("buffer_size"))) 
+    _buff(std::make_unique<char[]>(getConfigParam<unsigned int>("buffer_size"))) 
 {
 
 };
@@ -11,11 +11,12 @@ ALApp::ALApp(const char * fileName) :
 ALApp::ALApp() : 
     ALConfig(), 
     ALTCPServer(), 
-    _buff(std::make_unique<unsigned char[]>(getConfigParam<unsigned int>("buffer_size"))) 
+    _buff(std::make_unique<char[]>(getConfigParam<unsigned int>("buffer_size"))) 
 {
 
 };
 
+/** public event driven function **/
 void ALApp::onShutDownConnection(int fd) 
 {
     std::cout << "onShutDown" << std::endl;
@@ -23,7 +24,40 @@ void ALApp::onShutDownConnection(int fd)
 
 bool ALApp::onRead(int fd, int readsize) 
 {
-    std::cout << "onRead" << std::endl;
+    switch (_e_conn_mode)
+    {
+        //NORMAL
+        case AL_CONNECTION_TYPE_NORMAL:
+        {
+            return true; 
+        };
+        break;
+
+        //WS
+        case AL_CONNECTION_TYPE_WS:
+        {
+            if (_ws_handler.getALWSState() == ALWSHandler::ALWS_STATE_IDLE)
+            {
+                if (readsize < 0)
+                {       
+                    std::string response = _ws_handler.establish(_buff.get(), readsize);
+                    sendResponse(fd, response.c_str(), response.length()); 
+                }
+                return true;
+            }   
+            else 
+            {   
+                auto response = _ws_handler.process(_buff.get(), readsize);
+                return response.length() == 0;
+            }
+                   
+        };
+        break;
+
+        //default
+        default:
+            return true;
+    }
 };
 
 void ALApp::onAcceptConnection(int fd) 
@@ -33,12 +67,47 @@ void ALApp::onAcceptConnection(int fd)
 
 unsigned int ALApp::getBufferSize() 
 {
-    return 1024;
+    switch (_e_conn_mode)
+    {
+        case AL_CONNECTION_TYPE_NORMAL:
+        {
+            return 1024; 
+        };
+        break;
+        case AL_CONNECTION_TYPE_WS:
+        {
+            return _buffer_size;
+        };
+        break;
+        default:
+            return 1024;
+    }
 }
 
-unsigned char * ALApp::getBuffer() 
+char * ALApp::getBuffer() 
 {
     return _buff.get();
+}
+
+
+/*private member function*/
+int ALApp::init_buffer_size()
+{
+    switch (_e_conn_mode)
+    {
+        case AL_CONNECTION_TYPE_NORMAL:
+        {
+            return 1024;
+        };
+        break;
+        case AL_CONNECTION_TYPE_WS:
+        {
+            return 1;
+        }
+        break;
+        default:
+            return 1024;        
+    };
 }
 
 int main(int argc, char *argv[])

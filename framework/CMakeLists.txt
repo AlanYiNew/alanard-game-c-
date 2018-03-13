@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 #source directory  
 AUX_SOURCE_DIRECTORY(./ DIR_SRCS)  
-set (OTHER_SRCS network/ALTCPServer.cpp)
+set (OTHER_SRCS network/ALTCPServer.cpp network/ALWSHandler.cpp)
 
 #AUX_SOURCE_DIRECTORY(./network NETWORK_SRCS)
 

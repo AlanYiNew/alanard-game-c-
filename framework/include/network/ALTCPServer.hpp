@@ -6,7 +6,7 @@
 #include<vector>
 //
 // Created by alan on 9/17/17.
-//
+// Does not support edge_trigger
 
 #ifndef __TCPSERVER_H_
 #define __TCPSERVER_H_
@@ -41,11 +41,17 @@ class ALTCPServer{
         /** starts the TCPServer **/
         int starts();
 
+        /** public API function **/
+        void sendResponse(int fd, const char* buff, unsigned int size);
+
         /** pure event driven virtual function **/
-        virtual void onShutDownConnection(int fd)=0;
-        virtual bool onRead(int fd, int readsize)=0;
+        virtual void onShutDownConnection(int fd) = 0;
+        //Return value indicate whether to try reading the same socket if it's available 
+        //If nothing is able to be read, it will try finding if there is other socket which could be read from
+        //If not block unitl there is available sockets.
+        virtual bool onRead(int fd, int readsize)= 0;
         virtual void onAcceptConnection(int fd)= 0;
-        virtual unsigned char* getBuffer() = 0;
+        virtual char* getBuffer() = 0;
         virtual unsigned int getBufferSize() = 0; 
 };
 

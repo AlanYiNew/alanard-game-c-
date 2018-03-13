@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alan/alanard-game-c-new/framework
+CMAKE_SOURCE_DIR = /home/alan/alanard-game-c-latest/framework
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alan/alanard-game-c-new/framework
+CMAKE_BINARY_DIR = /home/alan/alanard-game-c-latest/framework
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-new/framework/CMakeFiles /home/alan/alanard-game-c-new/framework/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-latest/framework/CMakeFiles /home/alan/alanard-game-c-latest/framework/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-new/framework/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alan/alanard-game-c-latest/framework/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -204,6 +204,33 @@ network/ALTCPServer.cpp.s:
 	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/network/ALTCPServer.cpp.s
 .PHONY : network/ALTCPServer.cpp.s
 
+network/ALWSHandler.o: network/ALWSHandler.cpp.o
+
+.PHONY : network/ALWSHandler.o
+
+# target to build an object file
+network/ALWSHandler.cpp.o:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/network/ALWSHandler.cpp.o
+.PHONY : network/ALWSHandler.cpp.o
+
+network/ALWSHandler.i: network/ALWSHandler.cpp.i
+
+.PHONY : network/ALWSHandler.i
+
+# target to preprocess a source file
+network/ALWSHandler.cpp.i:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/network/ALWSHandler.cpp.i
+.PHONY : network/ALWSHandler.cpp.i
+
+network/ALWSHandler.s: network/ALWSHandler.cpp.s
+
+.PHONY : network/ALWSHandler.s
+
+# target to generate assembly for a file
+network/ALWSHandler.cpp.s:
+	$(MAKE) -f CMakeFiles/me.dir/build.make CMakeFiles/me.dir/network/ALWSHandler.cpp.s
+.PHONY : network/ALWSHandler.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -222,6 +249,9 @@ help:
 	@echo "... network/ALTCPServer.o"
 	@echo "... network/ALTCPServer.i"
 	@echo "... network/ALTCPServer.s"
+	@echo "... network/ALWSHandler.o"
+	@echo "... network/ALWSHandler.i"
+	@echo "... network/ALWSHandler.s"
 .PHONY : help
 
 

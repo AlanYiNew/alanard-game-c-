@@ -1,11 +1,11 @@
 #include <network/ALWSHandler.hpp>
+#include <sstream>
 
 
-ALWSHandler::ALWSHandler(unsigned int size):_buff(make_unique<char[]>(size)){}
-
-int ALWSHandler::fetch_http_info()
+int ALWSHandler::fetch_http_info(char * _buff, int readsize)
 {
-    std::istringstream s(*_buff);
+    std::stringstream s;
+    s.write(_buff,readsize);
     std::string request;
 
     std::getline(s, request);
@@ -33,19 +33,25 @@ int ALWSHandler::fetch_http_info()
         {
             std::string key = header.substr(0,end);
             std::string value = header.substr(end+2);
-            _header_map_[key] = value;
+            _header_map[key] = value;
         }
     }
 
     return 0;
 }
 
-ALWS_STATE ALWSHandler::getALWSState()
+
+std::string ALWSHandler::process(char *buff, int readsize)
 {
-    return _e_alws_state;
+    return "";
 }
 
-char** ALWSHandler::getBuff()
+std::string ALWSHandler::establish(char *buff, int readsize)
 {
-    return _ac_buff.get();
+    fetch_http_info(buff, readsize);
+    _e_alws_state = ALWS_STATE_BUSY;
+    std::string SHA1 = "123";
+    return SHA1;
 }
+
+

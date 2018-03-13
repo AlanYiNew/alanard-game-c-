@@ -104,14 +104,21 @@ void ALTCPServer::handle(int i)
         epoll_del(_ast_events[i].data.fd);
         onShutDownConnection(_ast_events[i].data.fd);
     }   
-    else if (readsize < 0 && readsize != EAGAIN)
+    else if (readsize == EAGAIN)
+    {
+        onRead(_ast_events[i].data.fd, EAGAIN);
+    }  
+    else if (readsize)
     {
         throw std::runtime_error("error during reading packet header from socket");
     }
  
 }
 
-
+void ALTCPServer::sendResponse(int fd,const char* buff,unsigned int size)
+{
+   send(fd,buff,size, 0);
+}
 
 ALTCPServer::~ALTCPServer() 
 {
