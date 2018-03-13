@@ -18,12 +18,12 @@ ALTCPServer::ALTCPServer()
     _st_serv_addr.sin_family = AF_INET;
 
     /** set address accepting any in_addr using host to network address 
-    transalation **/
+      transalation **/
     _st_serv_addr.sin_addr.s_addr = htonl(INADDR_ANY); 
 
     /** deafult value **/
     _i_pending_num = 100;
-    _i_port = 12000;
+    _i_port = 12333;
 
     _st_serv_addr.sin_port = htons(this->_i_port);
 
@@ -46,9 +46,13 @@ void ALTCPServer::set_pending_num(int _i_pending_num)
 int ALTCPServer::starts() {
     /** create a socket **/
     int listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    
+
     int err = bind(listenfd, (sockaddr*)&_st_serv_addr, sizeof(sockaddr_in));
     err = listen(listenfd, _i_pending_num);
+
+    if (err)
+        throw runtime_error("fail to bind socket");
+
     socklen_t len = sizeof(sockaddr_in);
 
     /** creates epollfd **/
@@ -60,12 +64,15 @@ int ALTCPServer::starts() {
 
     while (true) {
         /** wait on the events list and never timeout
-          * kind of like blokcing on all events **/
-        int nready = epoll_wait(_i_epoll_fd, _ast_events, _i_pending_num, -1);
+         * kind of like blokcing on all events **/
 
+        std::cout << "before epoll wait" << std::endl;
+        int nready = epoll_wait(_i_epoll_fd, _ast_events, _i_pending_num, -1);
+        std::cout << "shit" << std::endl;
         for (int i = 0; i < nready; i++) {
             if (_ast_events[i].data.fd == listenfd) {
                 int connfd = accept(listenfd, (struct sockaddr *) &_st_serv_addr, &len);
+                std::cout << "wtf" << std::endl;
                 if (fcntl(connfd, F_SETFL, fcntl(connfd, F_GETFL) | O_NONBLOCK) < 0)
                 {
                     //Put log here to indicate fail to put connfd into non-blocking mode TODO
@@ -80,44 +87,52 @@ int ALTCPServer::starts() {
             {
                 handle(i);  
             }
+        }   
 
-        }
+
     }
 
-    return 0;
+return 0;
 }
 
 void ALTCPServer::handle(int i)
 {
-    int readsize = 0;
 
-    while ((readsize = recv(_ast_events[i].data.fd,  getBuffer(), getBufferSize(), MSG_WAITALL)) && readsize > 0)
-    {
-        bool cont = onRead(_ast_events[i].data.fd, readsize);
-        if (!cont) break;
+    try{
+        int readsize = 0;
+
+        while ((readsize = recv(_ast_events[i].data.fd,  getBuffer(), getBufferSize(), MSG_WAITALL)) && readsize > 0)
+        {
+            bool cont = onRead(_ast_events[i].data.fd, readsize);
+            if (!cont) break;
+        }   
+
+        if (readsize == 0)
+        {
+            shutdown(_ast_events[i].data.fd, SHUT_RDWR);
+            close(_ast_events[i].data.fd);
+            epoll_del(_ast_events[i].data.fd);
+            onShutDownConnection(_ast_events[i].data.fd);
+        }   
+        else if (readsize < 0)
+        {
+            if (errno == EAGAIN)
+            {
+                onRead(_ast_events[i].data.fd, -1);
+            }   
+            else
+                throw std::runtime_error("error during reading packet header from socket");
+        }
     }   
-   
-    if (readsize == 0)
+    catch (std::exception &ex)
     {
-        shutdown(_ast_events[i].data.fd, SHUT_RDWR);
-        close(_ast_events[i].data.fd);
-        epoll_del(_ast_events[i].data.fd);
-        onShutDownConnection(_ast_events[i].data.fd);
-    }   
-    else if (readsize == EAGAIN)
-    {
-        onRead(_ast_events[i].data.fd, EAGAIN);
-    }  
-    else if (readsize)
-    {
-        throw std::runtime_error("error during reading packet header from socket");
-    }
- 
+        std::cout << "err duing onread" << std::endl;
+    }    
 }
 
 void ALTCPServer::sendResponse(int fd,const char* buff,unsigned int size)
 {
-   send(fd,buff,size, 0);
+    send(fd,buff,size, 0);
 }
 
 ALTCPServer::~ALTCPServer() 

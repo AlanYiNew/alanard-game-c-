@@ -24,6 +24,7 @@ void ALApp::onShutDownConnection(int fd)
 
 bool ALApp::onRead(int fd, int readsize) 
 {
+    std::cout << "onRead " << readsize << std::endl;
     switch (_e_conn_mode)
     {
         //NORMAL
