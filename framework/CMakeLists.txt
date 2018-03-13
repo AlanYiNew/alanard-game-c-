@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 3.5)
 MESSAGE("${CMAKE_SOURCE_DIR}/include")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include")
 
-#Use CXX 11
-set(CMAKE_CXX_STANDARD 11)
+#Use CXX 14
+set(CMAKE_CXX_STANDARD 14)
 
 #source directory  
 AUX_SOURCE_DIRECTORY(./ DIR_SRCS)  

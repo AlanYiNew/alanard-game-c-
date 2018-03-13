@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <network/ALTCPServer.hpp>
 #include <algorithm>
+#include <fcntl.h>
 
 #define MAX_BUFFER_SIZE 4096
 using namespace ::std;
@@ -26,7 +27,6 @@ ALTCPServer::ALTCPServer()
 
     _st_serv_addr.sin_port = htons(this->_i_port);
 
-    _e_conn_mode = CONNECTION_NORMAL;
 }
 
 void ALTCPServer::set_port(uint16_t _i_port)
@@ -66,23 +66,19 @@ int ALTCPServer::starts() {
         for (int i = 0; i < nready; i++) {
             if (_ast_events[i].data.fd == listenfd) {
                 int connfd = accept(listenfd, (struct sockaddr *) &_st_serv_addr, &len);
-                epoll_add(connfd);
-                onAcceptConnection(connfd);
+                if (fcntl(connfd, F_SETFL, fcntl(connfd, F_GETFL) | O_NONBLOCK) < 0)
+                {
+                    //Put log here to indicate fail to put connfd into non-blocking mode TODO
+                    shutdown(connfd, SHUT_RDWR);
+                    close(connfd);
+                }   else{
+                    epoll_add(connfd);
+                    onAcceptConnection(connfd);
+                }
             }
             else if (_ast_events[i].events & EPOLLIN) 
             {
-                switch(_e_conn_mode)
-                {
-                    case CONNECTION_WS:
-                        {
-                            handle_ws(i);
-                            break;
-                        };
-                    default:
-                        {
-                            handle_normal(i);
-                        }
-                }
+                handle(i);  
             }
 
         }
@@ -91,71 +87,28 @@ int ALTCPServer::starts() {
     return 0;
 }
 
-void ALTCPServer::handle_ws(int i)
+void ALTCPServer::handle(int i)
 {
     int readsize = 0;
-    /** buff **/
-    char buf[MAX_BUFFER_SIZE];
-    header_t header;
 
-    if ((readsize = recv(_ast_events[i].data.fd, &header, sizeof(header_t), MSG_WAITALL)) < 0) 
+    while ((readsize = recv(_ast_events[i].data.fd,  getBuffer(), getBufferSize(), MSG_WAITALL)) && readsize > 0)
     {
-        throw std::runtime_error("error during reading packet header from socket");
-    } 
-    else if (readsize == 0) 
+        bool cont = onRead(_ast_events[i].data.fd, readsize);
+        if (!cont) break;
+    }   
+   
+    if (readsize == 0)
     {
         shutdown(_ast_events[i].data.fd, SHUT_RDWR);
         close(_ast_events[i].data.fd);
         epoll_del(_ast_events[i].data.fd);
         onShutDownConnection(_ast_events[i].data.fd);
-    } 
-    else 
-    {
-        auto iRealBufferSize = header.size < MAX_BUFFER_SIZE ? header.size : MAX_BUFFER_SIZE;
-        while ((readsize = recv(_ast_events[i].data.fd,  &buf, iRealBufferSize, MSG_WAITALL)) != iRealBufferSize && readsize > 0)
-        {
-            buf[readsize] = '\0';
-            onRead(_ast_events[i].data.fd, &header, buf, readsize);
-        }   
-        
-        if (readsize == 0)
-        {
-            throw std::runtime_error("error during reading packet content from socket");
-        }
-    }
-}
-
-void ALTCPServer::handle_normal(int i)
-{
-    int readsize = 0;
-    /** buff **/
-    char buf[MAX_BUFFER_SIZE];
-    header_t header;
-
-    if ((readsize = recv(_ast_events[i].data.fd, &header, sizeof(header_t), MSG_WAITALL)) < 0) 
+    }   
+    else if (readsize < 0 && readsize != EAGAIN)
     {
         throw std::runtime_error("error during reading packet header from socket");
-    } 
-    else if (readsize == 0) 
-    {
-        shutdown(_ast_events[i].data.fd, SHUT_RDWR);
-        close(_ast_events[i].data.fd);
-        epoll_del(_ast_events[i].data.fd);
-        onShutDownConnection(_ast_events[i].data.fd);
-    } 
-    else 
-    {
-        auto iRealBufferSize = header.size < MAX_BUFFER_SIZE ? header.size : MAX_BUFFER_SIZE;
-        if (readsize = recv(_ast_events[i].data.fd,  &buf, iRealBufferSize, MSG_WAITALL))
-        {
-            buf[readsize] = '\0';
-            onRead(_ast_events[i].data.fd, &header, buf, readsize);
-        }   
-        else
-        {
-            throw std::runtime_error("error during reading packet content from socket");
-        }
     }
+ 
 }
 
 

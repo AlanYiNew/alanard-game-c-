@@ -3,5 +3,6 @@
     "message": {
                 "try" :"Hello World",
                 "this":"horrible"
-    }
+    },
+    "buffer_szie": 2048
 }

@@ -11,11 +11,6 @@
 #ifndef __TCPSERVER_H_
 #define __TCPSERVER_H_
 class ALTCPServer{
-    enum ConnectionType{
-        CONNECTION_NORMAL,
-        CONNECTION_WS
-    };
-
 
     private : 
         uint16_t _i_port;
@@ -23,13 +18,11 @@ class ALTCPServer{
         epoll_event _ast_events[65535];
         int _i_epoll_fd;
         int _i_pending_num;
-        ConnectionType _e_conn_mode;   
 
         int epoll_add(int fd);
         int epoll_del(int fd);
 
-        void handle_normal(int i);
-        void handle_ws(int i);
+        void handle(int i);
 
     public :
         struct header_t{
@@ -48,12 +41,12 @@ class ALTCPServer{
         /** starts the TCPServer **/
         int starts();
 
-
         /** pure event driven virtual function **/
         virtual void onShutDownConnection(int fd)=0;
-        virtual void onRead(int fd, const header_t * header, const char * buff , int readsize)=0;
+        virtual bool onRead(int fd, int readsize)=0;
         virtual void onAcceptConnection(int fd)= 0;
- 
+        virtual unsigned char* getBuffer() = 0;
+        virtual unsigned int getBufferSize() = 0; 
 };
 
 #endif //__TCPSERVER_H_
